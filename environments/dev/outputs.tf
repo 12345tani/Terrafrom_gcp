@@ -20,9 +20,9 @@
 #output "subnet" {
 #  value = "${module.vpc.subnet}"
 #}
-output "ALB" {
-  value = "${module.ALB.load-balancer-ip}"
-}
+#output "ALB" {
+ # value = "${module.ALB.load-balancer-ip}"
+#}
 
 #output "firewall_rule" {
 #  value = "${module.firewall.firewall_rule}"
