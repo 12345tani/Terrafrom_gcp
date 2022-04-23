@@ -68,7 +68,9 @@ steps:
           echo "*************** TERRAFOM PLAN ******************"
           echo "******* At environment: ${env} ********"
           echo "*************************************************"
-          terraform plan -lock=false || exit 1
+          terraform plan  || exit 1
+          terraform force-unlock -force 1650549684550755
+          
           cd ../../
         done
       fi 
