@@ -7,7 +7,7 @@ zone = "us-central1-c"
 }
 provider "google-beta" {
 #version = "3.5.0"
-credentials = file("../../accesskey/tf-dev-gcp-311d4b2691b9.json")
+#credentials = file("../../accesskey/tf-dev-gcp-311d4b2691b9.json")
 project = "google-gcp-test"
 region = "us-central1"
 zone = "us-central1-c"
