@@ -1,14 +1,14 @@
 provider "google" {
 #version = "3.5.0"
-credentials = file("../../accesskey/tf-dev-gcp-311d4b2691b9.json")
-project = "tf-dev-gcp"
+#credentials = file("../../accesskey/tf-dev-gcp-311d4b2691b9.json")
+project = "google-gcp-test"
 region = "us-central1"
 zone = "us-central1-c"
 }
 provider "google-beta" {
 #version = "3.5.0"
 credentials = file("../../accesskey/tf-dev-gcp-311d4b2691b9.json")
-project = "tf-dev-gcp"
+project = "google-gcp-test"
 region = "us-central1"
 zone = "us-central1-c"
 }
@@ -16,7 +16,7 @@ module "lb-http" {
   source  = "GoogleCloudPlatform/lb-http/google//modules/serverless_negs"
  #version = "~> 6.2.0"
   name    = var.lb_name
-  project = "tf-dev-gcp"
+  project = "google-gcp-test"
 
   #ssl                             = var.ssl
   #managed_ssl_certificate_domains = [var.domain]
@@ -61,7 +61,7 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg" {
 resource "google_cloud_run_service" "default" {
   name     = "example"
   location = var.region
-  project  = "tf-dev-gcp"
+  project  = "google-gcp-test"
 
   template {
     spec {
