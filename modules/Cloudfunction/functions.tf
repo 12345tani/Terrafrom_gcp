@@ -1,6 +1,6 @@
 # Generates an archive of the source code compressed as a .zip file.
 locals {
-  root_dir = "../src"
+  root_dir = " ../../modules/Cloudfunction/src"
 }
 data "archive_file" "source" {
   type        = "zip"
