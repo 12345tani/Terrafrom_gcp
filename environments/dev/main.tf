@@ -51,8 +51,8 @@ zone = "us-central1-c"
 #}
 module "Cloudfunction" {
  source  = "../../modules/Cloudfunction"
-  project = "${var.project}"
-  env     = "${local.env}"
+ # project = "${var.project}"
+ # env     = "${local.env}"
 }
 #module "CloudSQL" {
 #  source  = "../../modules/CloudSQL"
