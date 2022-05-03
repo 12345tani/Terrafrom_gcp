@@ -32,11 +32,11 @@ region = "us-central1"
 zone = "us-central1-c"
 }
 
-module "ALB" {
-  source  = "../../modules/ALB"
+#module "ALB" {
+ # source  = "../../modules/ALB"
   #project = "${var.project}"
   #env     = "${local.env}"
-}
+#}
 
 #module "http_server" {
  # source  = "../../modules/http_server"
@@ -49,11 +49,11 @@ module "ALB" {
 #  project = "${var.project}"
 #  subnet  = "${module.vpc.subnet}"#
 #}
-#module "Cloudfunction" {
-#  source  = "../../modules/Cloudfunction"
-  #project = "${var.project}"
-  #env     = "${local.env}"
-#}
+module "Cloudfunction" {
+ source  = "../../modules/Cloudfunction"
+  project = "${var.project}"
+  env     = "${local.env}"
+}
 #module "CloudSQL" {
 #  source  = "../../modules/CloudSQL"
   #project = "${var.project}"
