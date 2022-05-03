@@ -5,7 +5,7 @@ locals {
 data "archive_file" "source" {
   type        = "zip"
 #  source_dir  = local.root_dir
-    source_dir  = "src"
+    source_dir  = "${path.root}/src"
   output_path = "/tmp/function.zip"
 }
 
