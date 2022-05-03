@@ -1,10 +1,11 @@
 # Generates an archive of the source code compressed as a .zip file.
 locals {
-  root_dir = " ./src"
+  root_dir = "../src"
 }
 data "archive_file" "source" {
   type        = "zip"
-  source_dir  = local.root_dir
+#  source_dir  = local.root_dir
+    source_dir  = "../src"
   output_path = "/tmp/function.zip"
 }
 
