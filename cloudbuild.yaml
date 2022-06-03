@@ -1,47 +1,96 @@
-# Copyright 2019 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-
-  
-
 steps:
-- name: "node:14.18.1"
-  args: ["npm", "install"]
-- name: "node:14.18.1"
-  args: ["npm", "run", "build"]
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'getExchangeRates', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=getExchangeRates']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'getTransactionFees', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=getTransactionFees']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'exGetBankList', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=exGetBankList']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'getBanksList', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=getBanksList']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'getRecipients', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=getRecipients']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'postNewRecipient', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=postNewRecipient']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'postOrder', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=postOrder']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'getRecentTransactions', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=getRecentTransactions']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'exGetAccName', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=exGetAccName']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'getPaymentStatus', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=getPaymentStatus']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'postUser', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=postUser']
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ['functions', 'deploy', 'profileDetails', '--region', 'europe-west2', '--runtime', 'nodejs14', '--trigger-http', '--allow-unauthenticated', '--entry-point=profileDetails']
-timeout: 1800s   
+- id: 'branch name'
+  name: 'alpine'
+  entrypoint: 'sh'  
+  args: 
+  - '-c'
+  - | 
+      echo "***********************"
+      echo "$BRANCH_NAME"
+      echo "***********************"
+- id: 'tf init'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - |
+      if [ -d "environments/$BRANCH_NAME/" ]; then
+        cd environments/$BRANCH_NAME
+        terraform init
+      else
+        for dir in environments/*/
+        do 
+          cd ${dir}   
+          env=${dir%*/}
+          env=${env#*/}
+          echo ""
+          echo "*************** TERRAFORM INIT ******************"
+          echo "******* At environment: ${env} ********"
+          echo "*************************************************"
+          terraform init || exit 1
+          cd ../../
+        done
+      fi 
+# [START tf-plan]
+- id: 'tf plan'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - | 
+      if [ -d "environments/$BRANCH_NAME/" ]; then
+        cd environments/$BRANCH_NAME
+        terraform plan
+      else
+        for dir in environments/*/
+        do 
+          cd ${dir}   
+          env=${dir%*/}
+          env=${env#*/}  
+          echo ""
+          echo "*************** TERRAFOM PLAN ******************"
+          echo "******* At environment: ${env} ********"
+          echo "*************************************************"
+          terraform plan  || exit 1
+          terraform force-unlock -force 1650549684550755
+          
+          cd ../../
+        done
+      fi 
+# [END tf-plan]
+
+
+# [START tf-apply]
+- id: 'tf apply'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - | 
+      if [ -d "environments/$BRANCH_NAME/" ]; then
+        cd environments/$BRANCH_NAME      
+        terraform apply -auto-approve
+      else
+        echo "***************************** SKIPPING APPLYING *******************************"
+        echo "Branch '$BRANCH_NAME' does not represent an oficial environment."
+        echo "*******************************************************************************"
+      fi
+# [END tf-apply]      
+
+
+# [START tf-apply]
+- id: 'tf destroy'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args: 
+  - '-c'
+  - | 
+      if [ -d "environments/$BRANCH_NAME/" ]; then
+        cd environments/$BRANCH_NAME      
+        terraform destroy -auto-approve
+      else
+        echo "***************************** SKIPPING APPLYING *******************************"
+        echo "Branch '$BRANCH_NAME' does not represent an oficial environment."
+        echo "*******************************************************************************"
+      fi
+# [END tf-destroy]  
