@@ -15,7 +15,7 @@ zone = "us-central1-c"
 #region = "${var.region}"
 #}
 resource "google_sql_database_instance" "master" {
-name = "instance_name"
+name = "wslremit-test-db-anki"
 database_version = "MYSQL_5_7"
 region = "us-central1"
 settings {
@@ -23,7 +23,7 @@ tier = "db-n1-standard-2"
 }
 }
 resource "google_sql_database" "database" {
-name = "database_name"
+name = "databasename"
 instance = "${google_sql_database_instance.master.name}"
 charset = "utf8"
 collation = "utf8_general_ci"
