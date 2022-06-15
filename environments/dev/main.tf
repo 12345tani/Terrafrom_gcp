@@ -49,16 +49,16 @@ zone = "us-central1-c"
 #  project = "${var.project}"
 #  subnet  = "${module.vpc.subnet}"#
 #}
-module "Cloudfunction" {
- source  = "../../modules/Cloudfunction"
+#module "Cloudfunction" {
+# source  = "../../modules/Cloudfunction"
  # project = "${var.project}"
  # env     = "${local.env}"
-}
-#module "CloudSQL" {
-#  source  = "../../modules/CloudSQL"
+#}
+module "CloudSQL" {
+  source  = "../../modules/CloudSQL"
   #project = "${var.project}"
   #env     = "${local.env}"
-#}
+}
 #module "vpc" {
  # source  = "../../modules/vpc"
   #project = "${var.project}"
